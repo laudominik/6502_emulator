@@ -10,7 +10,7 @@ class Bus:
     def __init__(self):
         self.ram = [0 for x in range(0,0xFFFF + 1)]
         self.cpu = CPU(self)
-        self.cpu.setup()
+        self.cpu.reset()
 
     def read(self, address):
 

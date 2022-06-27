@@ -17,6 +17,28 @@ class CPU:
         self.instruction: Instruction = None
 
         self.arg = None
+        self.arg2 = None
+
+        self.lookup = {
+
+        #
+        #   opcd              address   c  callback
+            0x00: Instruction(self.IMP, 7, self.BRK),
+            0x01: Instruction(self.IZX, 6, self.ORA),
+            0x05: Instruction(self.ZP, 3, self.ORA),
+            0x06: Instruction(self.ZP, 6, self.ASL),
+            0x08: Instruction(self.IMP, 2, self.PHP),
+            0x09: Instruction(self.IMM, 2, self.ORA),
+            0x0d: Instruction(self.ABS, 4, self.ORA),
+            0x0e: Instruction(self.ABS, 6, self.ASL),
+            0x18: Instruction(self.IMP, 2, self.CLC),
+            0x29: Instruction(self.IMM, 2, self.ADC),
+            0x0a: Instruction(self.IMM, 2, self.ASL),
+            0xa9: Instruction(self.IMM, 2, self.LDA),
+            0xea: Instruction(self.IMM, 2, self.NOP)
+
+        }
+
 
     STATUS_BITS = {
         'C': 1,
@@ -29,26 +51,23 @@ class CPU:
         'N': 128
     }
 
+    def reset(self):
+        lo = self.read(0xFFFC)
+        hi = self.read(0xFFFD)
 
+        self.PC = (hi * 256) | lo
+        self.A = 0x00
+        self.X = 0x00
+        self.Y = 0x00
+        self.SP = 0x00
+        self.STATUS = CPU.STATUS_BITS['U']
+        self.arg = None
+        self.arg2 = None
 
-    def setup(self):
+        self.instruction = Instruction(self.IMP, 9, self.NOP)
+        self.cycles = 1
+        self.PC -= 1
 
-        self.lookup = {
-            #
-            #   opcd              address   c  callback
-            0x00: Instruction(self.IMM, 7, self.BRK),
-            0x01: Instruction(self.IZX, 6, self.ORA),
-            0x05: Instruction(self.ZP, 3, self.ORA),
-            0x06: Instruction(self.ZP, 6, self.ASL),
-            0x08: Instruction(self.IMM, 2, self.PHP),
-            0x09: Instruction(self.IMM, 2, self.ORA),
-            0x18: Instruction(self.IMP, 2, self.CLC),
-            0x29: Instruction(self.IMM, 2, self.ADC),
-            0x0a: Instruction(self.IMM, 2, self.ASL),
-            0xa9: Instruction(self.IMM, 2, self.LDA),
-            0xea: Instruction(self.IMM, 2, self.NOP)
-
-        }
 
     def status_set(self, bit, val: bool):
 
@@ -61,7 +80,7 @@ class CPU:
 
         return self.bus.read(address)
 
-    def cycle(self):
+    def tick(self):
         if self.cycles == 0:
 
             # read instruction from memory
@@ -107,7 +126,13 @@ class CPU:
         pass
 
     def IZX(self):
-        pass
+
+        address = self.read(self.PC + 1) + self.X
+        address &= 0xFF
+
+        self.arg = self.read(address)
+
+        self.PC += 2 # to check!!!
 
     def IZY(self):
 
@@ -134,7 +159,9 @@ class CPU:
         self.PC += 1
 
     def ORA(self):
-        pass
+        self.A |= self.arg
+        self.status_set(CPU.STATUS_BITS['Z'], self.A == 0)
+        self.status_set(CPU.STATUS_BITS['N'], self.A & 0x80)
 
     def ASL(self):
         pass
