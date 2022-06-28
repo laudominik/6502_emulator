@@ -20,38 +20,56 @@ class CPU:
         self.arg2 = None
         self.addr = None
 
+        # OPCODES -> INSTRUCTION
+        # decode table
+
         self.lookup = {
 
-        #   opcd              address   c  callback
+            #   opcd              addrmode  c  callback
             0x00: Instruction(self.IMP, 7, self.BRK),
-            0x01: Instruction(self.IZX, 6, self.ORA), #OK
-            0x05: Instruction(self.ZP, 3, self.ORA), #
-            0x06: Instruction(self.ZP, 5, self.ASL), #OK
-            0x08: Instruction(self.IMP, 3, self.PHP),
-            0x09: Instruction(self.IMM, 2, self.ORA), #OK
-            0x0a: Instruction(self.IMP, 2, self.ASL),
-            0x0d: Instruction(self.ABS, 4, self.ORA),
-            0x0e: Instruction(self.ABS, 6, self.ASL),
-            0x18: Instruction(self.IMP, 2, self.CLC),
-            0x29: Instruction(self.IMM, 2, self.ADC),
+            0x01: Instruction(self.IZX, 6, self.ORA),
 
 
-            0x85: Instruction(self.ZP, 3, self.STA),
-            0xa9: Instruction(self.IMM, 2, self.LDA),
-            0xea: Instruction(self.IMM, 2, self.NOP)
+
+            0x05: Instruction(self.ZPG, 3, self.ORA),  # OK
+            0x06: Instruction(self.ZPG, 5, self.ASL),  # OK
+
+            0x08: Instruction(self.IMP, 3, self.PHP),  # OK (to check eventually)
+            0x09: Instruction(self.IMM, 2, self.ORA),  # OK
+            0x0a: Instruction(self.IMP, 2, self.ASL),  # OK
+
+
+            0x0d: Instruction(self.ABS, 4, self.ORA),  # OK
+            0x0e: Instruction(self.ABS, 6, self.ASL),  # OK
+
+            0x10: Instruction(self.REL, 2, self.BPL),  # OK
+            0x11: Instruction(self.IZY, 5, self.ORA),  # OK
+
+            0x18: Instruction(self.IMP, 2, self.CLC),  # OK
+
+            0x69: Instruction(self.IMM, 2, self.ADC),  # OK
+
+            0x85: Instruction(self.ZPG, 3, self.STA),  # OK
+            0x8d: Instruction(self.ABS, 4, self.STA),  # OK
+            0xa2: Instruction(self.IMM, 2, self.LDX),  # OK
+            0xa6: Instruction(self.ZPG, 3, self.LDX),  # OK
+            0xa9: Instruction(self.IMM, 2, self.LDA),  # OK
+            0xae: Instruction(self.ABS, 4, self.LDX),  # OK
+            0xea: Instruction(self.IMM, 2, self.NOP),  # OK
 
         }
 
+    # helper bits for the S register
 
     STATUS_BITS = {
-        'C': 1,
-        'Z': 2,
-        'I': 4,
-        'D': 8,
-        'B': 16,
-        'U': 32,
-        'V': 64,
-        'N': 128
+        'C': 1,  # CARRY
+        'Z': 2,  # ZERO
+        'I': 4,  # DISABLE INTERRUPTS
+        'D': 8,  # DECIMAL
+        'B': 16,  # BREAK
+        'U': 32,  # UNUSED
+        'V': 64,  # OVERFLOW
+        'N': 128  # NEGATIVE
     }
 
     def reset(self):
@@ -70,7 +88,6 @@ class CPU:
         self.instruction = Instruction(self.IMP, 9, self.NOP)
         self.cycles = 1
         self.PC -= 1
-
 
     def status_set(self, bit, val: bool or int):
 
@@ -119,7 +136,7 @@ class CPU:
     def IMP(self):
         self.PC += 1
 
-    def ZP(self):
+    def ZPG(self):
 
         address = self.read(self.PC + 1)
         self.addr = address
@@ -127,14 +144,7 @@ class CPU:
 
         self.PC += 2
 
-
     def ZPX(self):
-        pass
-
-    def ZPY(self):
-        pass
-
-    def IZX(self):
 
         address = self.read(self.PC + 1) + self.X
         address &= 0xFF
@@ -142,14 +152,27 @@ class CPU:
         self.addr = address
         self.arg = self.read(address)
 
-        self.PC += 2 # to check!!!
+        self.PC += 2
+
+    def ZPY(self):
+        pass
+
+    def IZX(self):
+
+        pass
 
     def IZY(self):
 
         pass
 
     def ABS(self):
-        pass
+        lo = self.read(self.PC + 1)
+        hi = self.read(self.PC + 2)
+        address = (hi * 256) | lo
+
+        self.addr = address
+        self.arg = self.read(address)
+        self.PC += 3
 
     def IND(self):
         pass
@@ -168,10 +191,14 @@ class CPU:
         print("break")
         self.PC += 1
 
+    # bitwise or register A and operand
+
     def ORA(self):
         self.A |= self.arg
         self.status_set(CPU.STATUS_BITS['Z'], self.A == 0)
         self.status_set(CPU.STATUS_BITS['N'], self.A & 0x80)
+
+    # arithmetic shift left
 
     def ASL(self):
 
@@ -189,21 +216,33 @@ class CPU:
         else:
             self.write(self.addr, temp & 0xFF)
 
-
+    # push status register to stack,
+    # status register has B and U as 1
+    # stack is hardcoded as addresses
+    # in [$0100, $01FF]
 
     def PHP(self):
-        pass
+
+        self.write(0x0100 + self.SP,
+                   self.S |
+                   CPU.STATUS_BITS['B'] |
+                   CPU.STATUS_BITS['U'])
+
+        self.SP += 1
 
     def BPL(self):
         pass
+
+    # clear the carry bit in status register
 
     def CLC(self):
 
         self.status_set(CPU.STATUS_BITS['C'], False)
 
+    # store a in address specified
+
     def STA(self):
         self.write(self.addr, self.A)
-
 
     def JSR(self):
         pass
@@ -247,17 +286,27 @@ class CPU:
     def JMP(self):
         pass
 
+    # load register a with the operand
+
     def LDA(self):
 
         self.A = self.arg
+
+    # load register x with the operand
+
+    def LDX(self):
+
+        self.X = self.arg
+
+    # add with carry to the accumulator
 
     def ADC(self):
 
         self.A += self.arg
 
-        if(self.A > 0xFF):
-            self.status_set(CPU.STATUS_BITS['C'],True)
-        if(self.A  == 256):
+        if (self.A > 0xFF):
+            self.status_set(CPU.STATUS_BITS['C'], True)
+        if (self.A == 256):
             self.status_set(CPU.STATUS_BITS['Z'], True)
         self.status_set(CPU.STATUS_BITS['N'], self.A & 0x80)
         self.status_set(CPU.STATUS_BITS['V'],

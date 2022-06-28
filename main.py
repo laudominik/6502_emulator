@@ -1,5 +1,4 @@
 from Bus import Bus
-from CPU import CPU
 
 bus = Bus()
 
