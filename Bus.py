@@ -18,9 +18,18 @@ class Bus:
 
     def write(self, address, value) -> None:
 
-        self.ram[address.value] = value
+        self.ram[address] = value
 
 
+    def load_file(self, filename):
+
+        with open(filename, "rb") as f:
+            byte = f.read(0x8000)
+
+        for i in range(len(byte)):
+            self.ram[i + 0x8000] = byte[i]
+
+        self.cpu.reset()
 
 
 

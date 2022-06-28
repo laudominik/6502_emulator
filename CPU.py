@@ -18,22 +18,25 @@ class CPU:
 
         self.arg = None
         self.arg2 = None
+        self.addr = None
 
         self.lookup = {
 
-        #
         #   opcd              address   c  callback
             0x00: Instruction(self.IMP, 7, self.BRK),
-            0x01: Instruction(self.IZX, 6, self.ORA),
-            0x05: Instruction(self.ZP, 3, self.ORA),
-            0x06: Instruction(self.ZP, 6, self.ASL),
-            0x08: Instruction(self.IMP, 2, self.PHP),
-            0x09: Instruction(self.IMM, 2, self.ORA),
+            0x01: Instruction(self.IZX, 6, self.ORA), #OK
+            0x05: Instruction(self.ZP, 3, self.ORA), #
+            0x06: Instruction(self.ZP, 5, self.ASL), #OK
+            0x08: Instruction(self.IMP, 3, self.PHP),
+            0x09: Instruction(self.IMM, 2, self.ORA), #OK
+            0x0a: Instruction(self.IMP, 2, self.ASL),
             0x0d: Instruction(self.ABS, 4, self.ORA),
             0x0e: Instruction(self.ABS, 6, self.ASL),
             0x18: Instruction(self.IMP, 2, self.CLC),
             0x29: Instruction(self.IMM, 2, self.ADC),
-            0x0a: Instruction(self.IMM, 2, self.ASL),
+
+
+            0x85: Instruction(self.ZP, 3, self.STA),
             0xa9: Instruction(self.IMM, 2, self.LDA),
             0xea: Instruction(self.IMM, 2, self.NOP)
 
@@ -69,7 +72,7 @@ class CPU:
         self.PC -= 1
 
 
-    def status_set(self, bit, val: bool):
+    def status_set(self, bit, val: bool or int):
 
         if val:
             self.S |= bit
@@ -117,7 +120,13 @@ class CPU:
         self.PC += 1
 
     def ZP(self):
-        pass
+
+        address = self.read(self.PC + 1)
+        self.addr = address
+        self.arg = self.read(address)
+
+        self.PC += 2
+
 
     def ZPX(self):
         pass
@@ -130,6 +139,7 @@ class CPU:
         address = self.read(self.PC + 1) + self.X
         address &= 0xFF
 
+        self.addr = address
         self.arg = self.read(address)
 
         self.PC += 2 # to check!!!
@@ -164,7 +174,22 @@ class CPU:
         self.status_set(CPU.STATUS_BITS['N'], self.A & 0x80)
 
     def ASL(self):
-        pass
+
+        temp = self.A if self.instruction.addrmode == self.IMP else self.arg
+        temp *= 2
+
+        self.status_set(CPU.STATUS_BITS['C'],
+                        True if temp > 255 else False)
+
+        self.status_set(CPU.STATUS_BITS['Z'], temp % 256 == 0)
+        self.status_set(CPU.STATUS_BITS['N'], temp & 0x80)
+
+        if self.instruction.addrmode == self.IMP:
+            self.A = temp & 0xFF
+        else:
+            self.write(self.addr, temp & 0xFF)
+
+
 
     def PHP(self):
         pass
@@ -174,7 +199,10 @@ class CPU:
 
     def CLC(self):
 
-        self.status_set(CPU.STATUS_BITS['C'],False)
+        self.status_set(CPU.STATUS_BITS['C'], False)
+
+    def STA(self):
+        self.write(self.addr, self.A)
 
 
     def JSR(self):

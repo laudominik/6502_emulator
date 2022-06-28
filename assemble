@@ -1,0 +1,13 @@
+#!/bin/sh
+
+
+ASSEMBLER_LOCATION="/Users/roagen/Programs/vasm/vasm6502_oldstyle"
+FILE=$1
+ARGS="-Fbin -dotdir"
+
+
+exec $ASSEMBLER_LOCATION $FILE $ARGS
+
+
+
+
