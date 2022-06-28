@@ -1,3 +1,9 @@
+### 6502 emulator with a connected data bus
+
+
+
+not all the instructions are implemented yet
+
 assembly used: http://sun.hasenbraten.de/vasm/  
 reference: 
 * https://pl.wikipedia.org/wiki/MOS_Technology_6502
