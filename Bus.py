@@ -7,9 +7,9 @@ from ctypes import c_uint8 as Byte
 # ROM [0x8000 + 0xFFFF]
 class Bus:
 
-    def __init__(self):
+    def __init__(self, debug = False):
         self.ram = [0 for x in range(0,0xFFFF + 1)]
-        self.cpu = CPU(self)
+        self.cpu = CPU(self, debug)
         self.cpu.reset()
 
     def read(self, address):

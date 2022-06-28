@@ -4,7 +4,7 @@ import enum
 
 class CPU:
 
-    def __init__(self, bus):
+    def __init__(self, bus, debug = False):
 
         self.A = 0x00
         self.X = 0x00
@@ -16,8 +16,10 @@ class CPU:
         self.bus = bus
         self.instruction: Instruction = None
 
+        self.debug = debug
+
         self.arg = None
-        self.arg2 = None
+
         self.addr = None
 
         # OPCODES -> INSTRUCTION
@@ -42,10 +44,40 @@ class CPU:
             0x0d: Instruction(self.ABS, 4, self.ORA),  # OK
             0x0e: Instruction(self.ABS, 6, self.ASL),  # OK
 
-            0x10: Instruction(self.REL, 2, self.BPL),  # OK
-            0x11: Instruction(self.IZY, 5, self.ORA),  # OK
+            0x10: Instruction(self.REL, 2, self.BPL),
+            0x11: Instruction(self.IZY, 5, self.ORA),
+
+
+
+            0x15: Instruction(self.ZPX, 4, self.ORA),
+            0x16: Instruction(self.ZPX, 6, self.ASL),
 
             0x18: Instruction(self.IMP, 2, self.CLC),  # OK
+            0x19: Instruction(self.ABY, 4, self.ORA),
+
+
+
+            0x1d: Instruction(self.ABX, 4, self.ORA),
+            0x1e: Instruction(self.ABX, 7, self.ASL),
+
+            0x20: Instruction(self.ABS, 6, self.JSR),  # OK
+
+
+
+            0x24: Instruction(self.ZPG, 3, self.BIT),  # OK
+            0x25: Instruction(self.ZPG, 3, self.AND),  # OK
+            0x26: Instruction(self.ZPG, 5, self.ROL),  # OK
+
+            0x28: Instruction(self.IMP, 4, self.PLP),  # OK
+            0x29: Instruction(self.IMM, 2, self.AND),
+            0x2a: Instruction(self.IMP, 2, self.ROL),  # OK
+
+            0x2c: Instruction(self.ABS, 4, self.BIT),
+            0x2d: Instruction(self.ABS, 4, self.AND),
+            0x2e: Instruction(self.ABS, 6, self.ROL),
+
+            0x30: Instruction(self.REL, 2, self.BMI),
+
 
             0x69: Instruction(self.IMM, 2, self.ADC),  # OK
 
@@ -59,6 +91,8 @@ class CPU:
 
         }
 
+        for key in self.lookup:
+            self.lookup[key].opcode = key
     # helper bits for the S register
 
     STATUS_BITS = {
@@ -83,7 +117,7 @@ class CPU:
         self.SP = 0x00
         self.STATUS = CPU.STATUS_BITS['U']
         self.arg = None
-        self.arg2 = None
+
 
         self.instruction = Instruction(self.IMP, 9, self.NOP)
         self.cycles = 1
@@ -101,6 +135,7 @@ class CPU:
         return self.bus.read(address)
 
     def tick(self):
+
         if self.cycles == 0:
 
             # read instruction from memory
@@ -108,9 +143,18 @@ class CPU:
             op = self.read(self.PC)
 
             self.instruction = self.lookup[op]
+
+            out = f"{hex(self.PC)} {hex(self.instruction.opcode)}"
+
             self.instruction.addrmode()
 
+            if self.instruction.addrmode != self.IMP:
+                out += f" {hex(self.addr)}"
+
+            if self.debug: print(out)
+
             self.cycles += 1
+
 
         elif self.cycles < self.instruction.cycles:
 
@@ -131,6 +175,7 @@ class CPU:
 
     def IMM(self):
         self.arg = self.read(self.PC + 1)
+        self.addr = self.arg
         self.PC += 2
 
     def IMP(self):
@@ -173,6 +218,12 @@ class CPU:
         self.addr = address
         self.arg = self.read(address)
         self.PC += 3
+
+    def ABY(self):
+        pass
+
+    def ABX(self):
+        pass
 
     def IND(self):
         pass
@@ -245,19 +296,68 @@ class CPU:
         self.write(self.addr, self.A)
 
     def JSR(self):
-        pass
+
+        self.write(0x0100 + self.SP, self.PC & 0xFF)
+        self.SP += 1
+
+        self.write(0x0100 + self.SP, self.PC >> 8)
+        self.SP += 1
+
+        self.PC = self.addr
+
 
     def AND(self):
-        pass
+
+        self.A &= self.arg
+        self.status_set(CPU.STATUS_BITS['N'], self.A & 0x80)
+        self.status_set(CPU.STATUS_BITS['Z'], self.A == 0)
+
+    # test bits in memory
 
     def BIT(self):
-        pass
+
+        self.status_set(CPU.STATUS_BITS['N'],
+                        self.arg >> 7)
+        self.status_set(CPU.STATUS_BITS['V'], self.arg & (1 << 6))
+
+        self.status_set(CPU.STATUS_BITS['Z'], (self.arg & self.A) == 0)
 
     def ROL(self):
-        pass
 
+        if self.instruction.addrmode == self.IMP:
+            temp = self.A
+        else:
+            temp = self.arg
+
+        temp <<= 1
+        C = self.status_get(CPU.STATUS_BITS['C'])
+
+        self.status_set(CPU.STATUS_BITS['C'], temp > 255)
+
+        temp &= 0xFF
+        temp |= C
+        self.status_set(CPU.STATUS_BITS['N'], temp & 0x80)
+        self.status_set(CPU.STATUS_BITS['Z'], temp == 0)
+
+        if self.instruction.addrmode == self.IMP:
+            self.A = temp
+        else:
+            self.write(self.addr, temp)
+
+    # processor status is pulled from stack
     def PLP(self):
-        pass
+
+        self.SP -= 1
+
+        flagB = self.status_get(CPU.STATUS_BITS['B'])
+        flagU = self.status_get(CPU.STATUS_BITS['U'])
+
+        self.S = self.read(0x0100 + self.SP)
+
+        self.status_set(CPU.STATUS_BITS['B'], flagB)
+        self.status_set(CPU.STATUS_BITS['U'], flagU)
+
+
 
     def BMI(self):
         pass
@@ -317,3 +417,5 @@ class CPU:
         self.A %= 256
 
     # ----------------------------
+    def status_get(self, bit):
+        return 1 if (self.S & bit) > 0 else 0

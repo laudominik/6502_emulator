@@ -1,10 +1,15 @@
     .org $8000
 start:
-    lda #4
-    sta $05
-    lda #64
-    and $05
 
+    lda #64
+
+    sta $00
+    rol $00
+    rol $00
+    rol
+    php
+    adc #250
+    plp
 
     .org $FFFC
     .word start

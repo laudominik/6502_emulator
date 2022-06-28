@@ -1,10 +1,12 @@
     .org $8000
 start:
-    lda #4
-    sta $05
-    lda #64
-    and $05
+    lda #0
 
+loop:
+
+    adc #40
+
+    jsr loop
 
     .org $FFFC
     .word start
