@@ -7,3 +7,5 @@ class Instruction:
         self.callback = callback
         self.opcode = opcode
 
+    def disassemble(self):
+        return self.callback.__name__

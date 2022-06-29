@@ -165,12 +165,15 @@ class CPU:
 
             self.instruction = self.lookup[op]
 
-            out = f"{hex(self.PC)} {hex(self.instruction.opcode)}"
+            out = f"{hex(self.PC)} {self.instruction.disassemble()}"
 
             self.instruction.addrmode()
 
             if self.instruction.addrmode != self.IMP:
-                out += f" {hex(self.addr)}"
+                if self.instruction.addrmode == self.REL:
+                    out += f" {hex(self.arg)}"
+                else:
+                    out += f" {hex(self.addr)}"
 
             if self.debug: print(out)
 
@@ -518,6 +521,9 @@ class CPU:
         C = self.status_get(CPU.STATUS_BITS['C'])
         if C == 0:
             self.PC = self.addr
+
+
+
 
 
     # ----------------------------
