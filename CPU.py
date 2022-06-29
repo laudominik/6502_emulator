@@ -90,11 +90,20 @@ class CPU:
             0xa6: Instruction(self.ZPG, 3, self.LDX),  # OK
             0xa9: Instruction(self.IMM, 2, self.LDA),  # OK
 
+            0xc0: Instruction(self.IMM, 2, self.CPY),
+
+
+
+
             0xc8: Instruction(self.IMP, 2, self.INY),  # OK
+            0xc9: Instruction(self.IMM, 2, self.CMP),
 
             0xe8: Instruction(self.IMP, 2, self.INX),  # OK
 
             0xae: Instruction(self.ABS, 4, self.LDX),  # OK
+
+            0xe0: Instruction(self.IMM, 2, self.CPX),
+
             0xea: Instruction(self.IMM, 2, self.NOP),  # OK
 
         }
@@ -381,6 +390,32 @@ class CPU:
         self.status_set(CPU.STATUS_BITS['N'], self.Y & 0x80)
         self.status_set(CPU.STATUS_BITS['Z'], self.Y == 0)
 
+    def CMP(self):
+
+        reg = self.A
+
+        self.status_set(CPU.STATUS_BITS['Z'], reg == self.arg)
+        self.status_set(CPU.STATUS_BITS['C'], reg >= self.arg)
+        self.status_set(CPU.STATUS_BITS['N'], reg < self.arg)
+
+
+    def CPX(self):
+
+        reg = self.X
+
+        self.status_set(CPU.STATUS_BITS['Z'], reg == self.arg)
+        self.status_set(CPU.STATUS_BITS['C'], reg >= self.arg)
+        self.status_set(CPU.STATUS_BITS['N'], reg < self.arg)
+
+    def CPY(self):
+
+        reg = self.Y
+
+        self.status_set(CPU.STATUS_BITS['Z'], reg == self.arg)
+        self.status_set(CPU.STATUS_BITS['C'], reg >= self.arg)
+        self.status_set(CPU.STATUS_BITS['N'], reg < self.arg)
+
+
     def BMI(self):
         pass
 
@@ -428,16 +463,18 @@ class CPU:
 
     def ADC(self):
 
+        prev = self.A
         self.A += self.arg
+        carry = self.status_get(CPU.STATUS_BITS['C'])
+        self.A += carry
 
-        if (self.A > 0xFF):
-            self.status_set(CPU.STATUS_BITS['C'], True)
-        if (self.A == 256):
-            self.status_set(CPU.STATUS_BITS['Z'], True)
+        self.status_set(CPU.STATUS_BITS['C'], self.A > 0xFF)
+        self.status_set(CPU.STATUS_BITS['Z'], self.A == 256)
+
         self.status_set(CPU.STATUS_BITS['N'], self.A & 0x80)
         self.status_set(CPU.STATUS_BITS['V'],
-                        ~(self.A ^ self.arg) &
-                        ((self.A - self.arg) ^ self.A) &
+                        ~((prev ^ self.arg) &
+                        (prev ^ self.A)) &
                         0x0080)
 
         self.A %= 256
