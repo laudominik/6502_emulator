@@ -9,7 +9,7 @@ class CPU:
         self.A = 0x00
         self.X = 0x00
         self.Y = 0x00
-        self.SP = 0x00
+        self.SP = 0xFF
         self.PC = 0x0000
         self.S = 0x00  # status register
         self.cycles = 0
@@ -69,7 +69,7 @@ class CPU:
             0x26: Instruction(self.ZPG, 5, self.ROL),  # OK
 
             0x28: Instruction(self.IMP, 4, self.PLP),  # OK
-            0x29: Instruction(self.IMM, 2, self.AND),
+            0x29: Instruction(self.IMM, 2, self.AND),  # OK
             0x2a: Instruction(self.IMP, 2, self.ROL),  # OK
 
             0x2c: Instruction(self.ABS, 4, self.BIT),
@@ -83,9 +83,17 @@ class CPU:
 
             0x85: Instruction(self.ZPG, 3, self.STA),  # OK
             0x8d: Instruction(self.ABS, 4, self.STA),  # OK
+
+            0xa0: Instruction(self.IMM, 2, self.LDY),  # OK
+
             0xa2: Instruction(self.IMM, 2, self.LDX),  # OK
             0xa6: Instruction(self.ZPG, 3, self.LDX),  # OK
             0xa9: Instruction(self.IMM, 2, self.LDA),  # OK
+
+            0xc8: Instruction(self.IMP, 2, self.INY),  # OK
+
+            0xe8: Instruction(self.IMP, 2, self.INX),  # OK
+
             0xae: Instruction(self.ABS, 4, self.LDX),  # OK
             0xea: Instruction(self.IMM, 2, self.NOP),  # OK
 
@@ -114,7 +122,7 @@ class CPU:
         self.A = 0x00
         self.X = 0x00
         self.Y = 0x00
-        self.SP = 0x00
+        self.SP = 0xFF
         self.STATUS = CPU.STATUS_BITS['U']
         self.arg = None
 
@@ -279,7 +287,7 @@ class CPU:
                    CPU.STATUS_BITS['B'] |
                    CPU.STATUS_BITS['U'])
 
-        self.SP += 1
+        self.SP -= 1
 
     def BPL(self):
         pass
@@ -298,10 +306,10 @@ class CPU:
     def JSR(self):
 
         self.write(0x0100 + self.SP, self.PC & 0xFF)
-        self.SP += 1
+        self.SP -= 1
 
         self.write(0x0100 + self.SP, self.PC >> 8)
-        self.SP += 1
+        self.SP -= 1
 
         self.PC = self.addr
 
@@ -347,7 +355,7 @@ class CPU:
     # processor status is pulled from stack
     def PLP(self):
 
-        self.SP -= 1
+        self.SP += 1
 
         flagB = self.status_get(CPU.STATUS_BITS['B'])
         flagU = self.status_get(CPU.STATUS_BITS['U'])
@@ -357,7 +365,21 @@ class CPU:
         self.status_set(CPU.STATUS_BITS['B'], flagB)
         self.status_set(CPU.STATUS_BITS['U'], flagU)
 
+    def INX(self):
 
+        self.X += 1
+        self.X &= 0xFF
+
+        self.status_set(CPU.STATUS_BITS['N'], self.X & 0x80)
+        self.status_set(CPU.STATUS_BITS['Z'], self.X == 0)
+
+    def INY(self):
+
+        self.Y += 1
+        self.Y &= 0xFF
+
+        self.status_set(CPU.STATUS_BITS['N'], self.Y & 0x80)
+        self.status_set(CPU.STATUS_BITS['Z'], self.Y == 0)
 
     def BMI(self):
         pass
@@ -397,6 +419,10 @@ class CPU:
     def LDX(self):
 
         self.X = self.arg
+
+    def LDY(self):
+
+        self.Y = self.arg
 
     # add with carry to the accumulator
 
