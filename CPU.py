@@ -80,6 +80,8 @@ class CPU:
 
 
             0x69: Instruction(self.IMM, 2, self.ADC),  # OK
+            0x6a: Instruction(self.IMP, 2, self.ROR),
+
 
             0x85: Instruction(self.ZPG, 3, self.STA),  # OK
             0x8d: Instruction(self.ABS, 4, self.STA),  # OK
@@ -171,7 +173,6 @@ class CPU:
             if self.debug: print(out)
 
             self.cycles += 1
-
 
         elif self.cycles < self.instruction.cycles:
 
@@ -353,6 +354,29 @@ class CPU:
 
         temp &= 0xFF
         temp |= C
+        self.status_set(CPU.STATUS_BITS['N'], temp & 0x80)
+        self.status_set(CPU.STATUS_BITS['Z'], temp == 0)
+
+        if self.instruction.addrmode == self.IMP:
+            self.A = temp
+        else:
+            self.write(self.addr, temp)
+
+    def ROR(self):
+        if self.instruction.addrmode == self.IMP:
+            temp = self.A
+        else:
+            temp = self.arg
+
+        lowest = temp % 2
+
+        temp >>= 1
+        C = self.status_get(CPU.STATUS_BITS['C'])
+
+        self.status_set(CPU.STATUS_BITS['C'], lowest)
+
+        temp |= (C << 7)
+
         self.status_set(CPU.STATUS_BITS['N'], temp & 0x80)
         self.status_set(CPU.STATUS_BITS['Z'], temp == 0)
 
