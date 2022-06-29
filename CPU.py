@@ -86,6 +86,8 @@ class CPU:
             0x85: Instruction(self.ZPG, 3, self.STA),  # OK
             0x8d: Instruction(self.ABS, 4, self.STA),  # OK
 
+            0x90: Instruction(self.REL, 2, self.BCC),
+
             0xa0: Instruction(self.IMM, 2, self.LDY),  # OK
 
             0xa2: Instruction(self.IMM, 2, self.LDX),  # OK
@@ -247,7 +249,15 @@ class CPU:
         pass
 
     def REL(self):
-        pass
+
+        self.arg = self.read(self.PC + 1)
+        self.PC += 2
+
+        if self.arg & 0x80:
+
+            self.addr = self.PC - ((~(self.arg - 1)) & 0xFF)
+        else:
+            self.addr = self.PC + self.arg
 
     # ----------------------------
 
@@ -502,6 +512,13 @@ class CPU:
                         0x0080)
 
         self.A %= 256
+
+    def BCC(self):
+
+        C = self.status_get(CPU.STATUS_BITS['C'])
+        if C == 0:
+            self.PC = self.addr
+
 
     # ----------------------------
     def status_get(self, bit):

@@ -1,9 +1,11 @@
     .org $8000
 start:
+    lda #1
+    loop:
+    adc #40
+    bcc loop
 
-    lda #$ff
-    ror
-    ror
+continue:
 
     .org $FFFC
     .word start
