@@ -1,16 +1,20 @@
     .org $8000
 start:
-    lda #2
+    lda #10
 
-    ror
-    bcc even
-    clc
-    adc #1
+    sta $00
+    ldx $00
+    lda #15
 
-    even:
+    cpx #10
+    bcc sma
 
+    lda #0
+    jmp end
+    sma:
+    lda #1
 
-
+    end:
 
     .org $FFFC
     .word start
