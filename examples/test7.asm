@@ -1,10 +1,10 @@
     .org $8000
 start:
-    ldx #$FF
-    ldy #$F0
-
-    inx
-    iny
+    lda #$F0
+    sta $4000
+    lda #$FF
+    rol $4000
+    and $4000
 
     .org $FFFC
     .word start

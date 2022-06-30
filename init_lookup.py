@@ -44,8 +44,8 @@ def init_lookup(self):
         0x29: Instruction(amd.IMM, 2, opc.AND),  # OK
         0x2a: Instruction(amd.IMP, 2, opc.ROL),  # OK
 
-        0x2c: Instruction(amd.ABS, 4, opc.BIT),
-        0x2d: Instruction(amd.ABS, 4, opc.AND),
+        0x2c: Instruction(amd.ABS, 4, opc.BIT),  # OK ?
+        0x2d: Instruction(amd.ABS, 4, opc.AND),  # OK
         0x2e: Instruction(amd.ABS, 6, opc.ROL),
 
         0x30: Instruction(amd.REL, 2, opc.BMI),
@@ -85,7 +85,6 @@ def init_lookup(self):
         0xea: Instruction(amd.IMM, 2, opc.NOP),  # OK
 
         0xf0: Instruction(amd.REL, 2, opc.BEQ),  # OK
-
 
 
     }
