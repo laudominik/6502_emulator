@@ -10,6 +10,8 @@ def init_lookup(self):
         0x00: Instruction(amd.IMP, 7, opc.BRK),
         0x01: Instruction(amd.IZX, 6, opc.ORA),
 
+
+
         0x05: Instruction(amd.ZPG, 3, opc.ORA),  # OK
         0x06: Instruction(amd.ZPG, 5, opc.ASL),  # OK
 
@@ -56,13 +58,16 @@ def init_lookup(self):
         0x85: Instruction(amd.ZPG, 3, opc.STA),  # OK
         0x8d: Instruction(amd.ABS, 4, opc.STA),  # OK
 
-        0x90: Instruction(amd.REL, 2, opc.BCC),
+        0x90: Instruction(amd.REL, 2, opc.BCC),  # OK
 
         0xa0: Instruction(amd.IMM, 2, opc.LDY),  # OK
 
         0xa2: Instruction(amd.IMM, 2, opc.LDX),  # OK
         0xa6: Instruction(amd.ZPG, 3, opc.LDX),  # OK
         0xa9: Instruction(amd.IMM, 2, opc.LDA),  # OK
+
+
+        0xb0: Instruction(amd.REL, 2, opc.BCS),  # OK
 
         0xc0: Instruction(amd.IMM, 2, opc.CPY),  # OK
 
@@ -73,9 +78,15 @@ def init_lookup(self):
 
         0xae: Instruction(amd.ABS, 4, opc.LDX),  # OK
 
+        0xd0: Instruction(amd.REL, 2, opc.BNE),  # OK
+
         0xe0: Instruction(amd.IMM, 2, opc.CPX),  # OK
 
         0xea: Instruction(amd.IMM, 2, opc.NOP),  # OK
+
+        0xf0: Instruction(amd.REL, 2, opc.BEQ),  # OK
+
+
 
     }
 

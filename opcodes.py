@@ -269,5 +269,17 @@ def BCC(self):
         self.PC = self.addr
 
 
+def BCS(self):
+    C = self.status_get(self.STATUS_BITS['C'])
+    if C == 1:
+        self.PC = self.addr
 
+def BNE(self):
+    Z = self.status_get(self.STATUS_BITS['Z'])
+    if Z == 0:
+        self.PC = self.addr
 
+def BEQ(self):
+    Z = self.status_get(self.STATUS_BITS['Z'])
+    if Z == 1:
+        self.PC = self.addr
