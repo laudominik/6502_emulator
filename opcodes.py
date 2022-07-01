@@ -250,7 +250,6 @@ def ADC(self):
     carry = self.status_get(self.STATUS_BITS['C'])
     self.A += carry
 
-
     self.status_set(self.STATUS_BITS['C'], self.A > 0xFF)
     self.status_set(self.STATUS_BITS['Z'], self.A == 256)
 
@@ -363,7 +362,10 @@ def DEX(self):
 
 
 def SBC(self):
-    pass
+
+    self.arg = ((~self.arg) & 0xFF)
+
+    ADC(self)
 
 
 def SEC(self):
