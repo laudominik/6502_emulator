@@ -32,6 +32,23 @@ class Bus:
 
         self.cpu.reset()
 
+    def dump(self):
+
+        to_dump = dict()
+        tmp = self.cpu.__dict__
+
+        to_dump.update({x: tmp[x] for x in self.cpu.__dict__
+                        if x != 'bus' and
+                        x != 'instruction' and
+                        x != 'lookup' and
+                        x != 'STATUS'
+                        })
+        to_dump["ram"] = self.ram
+
+        return to_dump
+
+
+
 
 
 
