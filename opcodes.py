@@ -197,11 +197,6 @@ def CPY(self):
     self.status_set(self.STATUS_BITS['N'], reg < self.arg)
 
 
-
-def SEC(self):
-    pass
-
-
 def RTI(self):
     pass
 
@@ -218,8 +213,6 @@ def PHA(self):
     pass
 
 
-def CLI(self):
-    pass
 
 
 def JMP(self):
@@ -228,21 +221,28 @@ def JMP(self):
 
 # load register a with the operand
 
+
 def LDA(self):
     self.A = self.arg
-
+    self.status_set(self.STATUS_BITS['Z'], self.A == 0)
+    self.status_set(self.STATUS_BITS['N'], self.A & 0x80)
 
 # load register x with the operand
 
+
 def LDX(self):
     self.X = self.arg
+    self.status_set(self.STATUS_BITS['Z'], self.X == 0)
+    self.status_set(self.STATUS_BITS['N'], self.X & 0x80)
 
 
 def LDY(self):
     self.Y = self.arg
-
+    self.status_set(self.STATUS_BITS['Z'], self.Y == 0)
+    self.status_set(self.STATUS_BITS['N'], self.Y & 0x80)
 
 # add with carry to the accumulator
+
 
 def ADC(self):
     prev = self.A
@@ -353,3 +353,38 @@ def DEY(self):
     self.status_set(self.STATUS_BITS['N'], self.Y & 0x80)
     self.status_set(self.STATUS_BITS['Z'], self.Y == 0)
 
+
+def DEX(self):
+    self.X -= 1
+    self.X %= 256
+
+    self.status_set(self.STATUS_BITS['N'], self.X & 0x80)
+    self.status_set(self.STATUS_BITS['Z'], self.X == 0)
+
+
+def SBC(self):
+    pass
+
+
+def SEC(self):
+    self.status_set(self.STATUS_BITS['C'], 1)
+
+
+def SEI(self):
+    self.status_set(self.STATUS_BITS['I'], 1)
+
+
+def SED(self):
+    self.status_set(self.STATUS_BITS['D'], 1)
+
+
+def CLI(self):
+    self.status_set(self.STATUS_BITS['I'], 0)
+
+
+def CLV(self):
+    self.status_set(self.STATUS_BITS['V'], 0)
+
+
+def CLD(self):
+    self.status_set(self.STATUS_BITS['D'], 0)
