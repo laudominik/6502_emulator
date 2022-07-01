@@ -50,8 +50,6 @@ def PHP(self):
     self.SP -= 1
 
 
-def BPL(self):
-    pass
 
 
 # clear the carry bit in status register
@@ -191,9 +189,6 @@ def CPY(self):
     self.status_set(self.STATUS_BITS['N'], reg < self.arg)
 
 
-def BMI(self):
-    pass
-
 
 def SEC(self):
     pass
@@ -212,10 +207,6 @@ def LSR(self):
 
 
 def PHA(self):
-    pass
-
-
-def BVC(self):
     pass
 
 
@@ -283,3 +274,38 @@ def BEQ(self):
     Z = self.status_get(self.STATUS_BITS['Z'])
     if Z == 1:
         self.PC = self.addr
+
+def BMI(self):
+    N = self.status_get(self.STATUS_BITS['N'])
+    if N == 1:
+        self.PC = self.addr
+
+def BPL(self):
+    N = self.status_get(self.STATUS_BITS['N'])
+    if N == 0:
+        self.PC = self.addr
+
+def BVC(self):
+    V = self.status_get(self.STATUS_BITS['V'])
+    if V == 0:
+        self.PC = self.addr
+
+def BVS(self):
+    V = self.status_get(self.STATUS_BITS['V'])
+    if V == 1:
+        self.PC = self.addr
+
+def TXA(self):
+    self.A = self.X
+
+def TAX(self):
+    self.X = self.A
+
+def TYA(self):
+    self.A = self.Y
+
+def TAY(self):
+    self.Y = self.A
+
+def TSX(self):
+    self.X = self.SP

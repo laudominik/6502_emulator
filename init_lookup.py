@@ -46,28 +46,45 @@ def init_lookup(self):
 
         0x2c: Instruction(amd.ABS, 4, opc.BIT),  # OK ?
         0x2d: Instruction(amd.ABS, 4, opc.AND),  # OK
-        0x2e: Instruction(amd.ABS, 6, opc.ROL),
+        0x2e: Instruction(amd.ABS, 6, opc.ROL),  # OK ?
 
         0x30: Instruction(amd.REL, 2, opc.BMI),
+
+        0x50: Instruction(amd.REL, 2, opc.BVC),
+
 
         0x4c: Instruction(amd.ABS, 3, opc.JMP),
 
         0x69: Instruction(amd.IMM, 2, opc.ADC),  # OK
         0x6a: Instruction(amd.IMP, 2, opc.ROR),
 
+        0x70: Instruction(amd.REL, 2, opc.BVS),
+
         0x85: Instruction(amd.ZPG, 3, opc.STA),  # OK
+
+        0x8a: Instruction(amd.IMP, 2, opc.TXA),  # OK
+
         0x8d: Instruction(amd.ABS, 4, opc.STA),  # OK
 
         0x90: Instruction(amd.REL, 2, opc.BCC),  # OK
+
+        0x98: Instruction(amd.IMP, 2, opc.TYA),  # OK
 
         0xa0: Instruction(amd.IMM, 2, opc.LDY),  # OK
 
         0xa2: Instruction(amd.IMM, 2, opc.LDX),  # OK
         0xa6: Instruction(amd.ZPG, 3, opc.LDX),  # OK
-        0xa9: Instruction(amd.IMM, 2, opc.LDA),  # OK
 
+        0xa8: Instruction(amd.IMP, 2, opc.TAY),  # OK
+        0xa9: Instruction(amd.IMM, 2, opc.LDA),  # OK
+        0xaa: Instruction(amd.IMP, 2, opc.TAX),  # OK
+
+
+        0xad: Instruction(amd.ABS, 3, opc.LDA),  # OK
 
         0xb0: Instruction(amd.REL, 2, opc.BCS),  # OK
+
+        0xba: Instruction(amd.IMP, 2, opc.TSX),  # OK
 
         0xc0: Instruction(amd.IMM, 2, opc.CPY),  # OK
 

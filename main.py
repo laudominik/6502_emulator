@@ -19,6 +19,6 @@ while 1:
     end = time()
     elapsed = end - start
 
-    assert elapsed < 1/config["tps"]
-
-    sleep(1/config["tps"] - elapsed)
+    if not config["debug"]:
+        assert elapsed < 1/config["tps"]
+        sleep(1/config["tps"] - elapsed)
