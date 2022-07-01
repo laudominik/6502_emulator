@@ -1,5 +1,5 @@
-
 from addr_modes import IMP
+
 
 def NOP(self):
     self.PC += 1
@@ -62,6 +62,14 @@ def CLC(self):
 
 def STA(self):
     self.write(self.addr, self.A)
+
+
+def STX(self):
+    self.write(self.addr, self.X)
+
+
+def STY(self):
+    self.write(self.addr, self.Y)
 
 
 def JSR(self):
@@ -242,6 +250,7 @@ def ADC(self):
     carry = self.status_get(self.STATUS_BITS['C'])
     self.A += carry
 
+
     self.status_set(self.STATUS_BITS['C'], self.A > 0xFF)
     self.status_set(self.STATUS_BITS['Z'], self.A == 256)
 
@@ -290,22 +299,57 @@ def BVC(self):
     if V == 0:
         self.PC = self.addr
 
+
 def BVS(self):
     V = self.status_get(self.STATUS_BITS['V'])
     if V == 1:
         self.PC = self.addr
 
+
 def TXA(self):
     self.A = self.X
+    self.status_set(self.STATUS_BITS['Z'], self.A == 0)
+    self.status_set(self.STATUS_BITS['N'], self.A & 0x80)
+
 
 def TAX(self):
     self.X = self.A
+    self.status_set(self.STATUS_BITS['Z'], self.X == 0)
+    self.status_set(self.STATUS_BITS['N'], self.X & 0x80)
 
 def TYA(self):
     self.A = self.Y
+    self.status_set(self.STATUS_BITS['Z'], self.A == 0)
+    self.status_set(self.STATUS_BITS['N'], self.A & 0x80)
+
 
 def TAY(self):
     self.Y = self.A
+    self.status_set(self.STATUS_BITS['Z'], self.Y == 0)
+    self.status_set(self.STATUS_BITS['N'], self.Y & 0x80)
 
 def TSX(self):
     self.X = self.SP
+    self.status_set(self.STATUS_BITS['Z'], self.X == 0)
+    self.status_set(self.STATUS_BITS['N'], self.X & 0x80)
+
+def TXS(self):
+    self.SP = self.X
+
+def INC(self):
+
+    self.arg += 1
+    self.arg %= 256
+    self.status_set(self.STATUS_BITS['Z'], self.arg == 0)
+    self.status_set(self.STATUS_BITS['N'], self.arg & 0x80)
+
+    self.write(self.addr, self.arg)
+
+
+def DEY(self):
+    self.Y -= 1
+    self.Y %= 256
+
+    self.status_set(self.STATUS_BITS['N'], self.Y & 0x80)
+    self.status_set(self.STATUS_BITS['Z'], self.Y == 0)
+

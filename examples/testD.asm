@@ -1,9 +1,10 @@
     .org $8000
 start:
 
-    lda #69
-    sta $4000
-    inc $4000
+    ldy #1
+    dey
+    dey
+    dey
 
     .org $FFFC
     .word start

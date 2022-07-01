@@ -1,10 +1,11 @@
 from CPU import CPU
-from ctypes import c_uint16 as Word
-from ctypes import c_uint8 as Byte
+
 
 # data bus
 # RAM [0x0, 0x7FFF]
 # ROM [0x8000 + 0xFFFF]
+
+
 class Bus:
 
     def __init__(self, debug = False):
