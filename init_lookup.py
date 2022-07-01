@@ -59,6 +59,10 @@ def init_lookup(self):
 
         0x58: Instruction(amd.IMP, 2, opc.CLI),  # OK
 
+        0x60: Instruction(amd.IMP, 2, opc.RTS),  # OK
+
+        0x65: Instruction(amd.ZPG, 3, opc.ADC),
+
         0x69: Instruction(amd.IMM, 2, opc.ADC),  # OK
         0x6a: Instruction(amd.IMP, 2, opc.ROR),  # OK
 

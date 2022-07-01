@@ -5,6 +5,9 @@ start:
     sec
     sbc #20
 
+
+
+
     .org $FFFC
     .word start
     .word $0000

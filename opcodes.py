@@ -390,3 +390,12 @@ def CLV(self):
 
 def CLD(self):
     self.status_set(self.STATUS_BITS['D'], 0)
+
+
+def RTS(self):
+
+    hi = self.read(0x0100 + self.SP + 1)
+    lo = self.read(0x0100 + self.SP + 2)
+    self.SP += 2
+    self.PC = (hi * 256) | lo
+
