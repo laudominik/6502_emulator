@@ -101,8 +101,9 @@ def init_lookup(self):
 
         0x90: Instruction(amd.REL, 2, opc.BCC),  # OK
 
-
+        0x94: Instruction(amd.ZPX, 4, opc.STY),
         0x95: Instruction(amd.ZPX, 4, opc.STA),  # OK
+        0x96: Instruction(amd.ZPY, 4, opc.STX),
 
         0x98: Instruction(amd.IMP, 2, opc.TYA),  # OK
         0x99: Instruction(amd.ABY, 5, opc.STA),
@@ -186,8 +187,12 @@ def init_lookup(self):
 
         0xf0: Instruction(amd.REL, 2, opc.BEQ),  # OK
 
-        0xf8: Instruction(amd.IMP, 2, opc.SED),  # OK
+        0xf5: Instruction(amd.ZPX, 4, opc.SBC),
 
+        0xf8: Instruction(amd.IMP, 2, opc.SED),  # OK
+        0xf9: Instruction(amd.ABY, 4, opc.SBC),
+
+        0xfd: Instruction(amd.ABX, 4, opc.SBC),
     }
 
     for key in self.lookup:
