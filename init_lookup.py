@@ -60,6 +60,7 @@ def init_lookup(self):
 
         0x50: Instruction(amd.REL, 2, opc.BVC),  # OK
 
+        0x48: Instruction(amd.IMP, 3, opc.PHA),
 
         0x4c: Instruction(amd.ABS, 3, opc.JMP),  # OK
 
@@ -70,7 +71,7 @@ def init_lookup(self):
         0x65: Instruction(amd.ZPG, 3, opc.ADC),
         0x66: Instruction(amd.ZPG, 5, opc.ROR),
 
-
+        0x68: Instruction(amd.IMP, 4, opc.PLA),
         0x69: Instruction(amd.IMM, 2, opc.ADC),  # OK
         0x6a: Instruction(amd.IMP, 2, opc.ROR),  # OK
 

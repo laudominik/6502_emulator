@@ -50,6 +50,10 @@ def PHP(self):
     self.SP -= 1
 
 
+def PHA(self):
+    self.write(0x0100 + self.SP,self.A)
+
+    self.SP -= 1
 
 
 # clear the carry bit in status register
@@ -157,6 +161,12 @@ def PLP(self):
     self.status_set(self.STATUS_BITS['U'], flagU)
 
 
+def PLA(self):
+
+    self.SP += 1
+    self.A = self.read(0x0100 + self.SP)
+
+
 def INX(self):
     self.X += 1
     self.X &= 0xFF
@@ -207,11 +217,6 @@ def EOR(self):
 
 def LSR(self):
     pass
-
-
-def PHA(self):
-    pass
-
 
 
 
