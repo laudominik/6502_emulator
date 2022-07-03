@@ -345,6 +345,16 @@ def INC(self):
     self.write(self.addr, self.arg)
 
 
+def DEC(self):
+
+    self.arg -= 1
+    self.arg %= 256
+    self.status_set(self.STATUS_BITS['Z'], self.arg == 0)
+    self.status_set(self.STATUS_BITS['N'], self.arg & 0x80)
+
+    self.write(self.addr, self.arg)
+
+
 def DEY(self):
     self.Y -= 1
     self.Y %= 256

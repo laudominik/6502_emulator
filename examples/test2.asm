@@ -1,12 +1,21 @@
     .org $8000
 start:
-    lda #$FF
-    sta $4001
-    ldx $4001
+    ldx #10
+    lda #7
+loop:
 
-    lda #$0F
-    sta $01
-    ldx $01
+    sta $4000, X
+    dex
+    bpl loop
+
+    ldx #10
+loop2:
+
+loop3:
+    dec $4000, X
+    bne loop3
+    dex
+    bpl loop2
 
     .org $FFFC
     .word start

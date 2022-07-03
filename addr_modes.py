@@ -29,7 +29,13 @@ def ZPX(self):
 
 
 def ZPY(self):
-    pass
+    address = self.read(self.PC + 1) + self.Y
+    address &= 0xFF
+
+    self.addr = address
+    self.arg = self.read(address)
+
+    self.PC += 2
 
 
 def IZX(self):
@@ -51,15 +57,23 @@ def ABS(self):
 
 
 def ABY(self):
-    pass
+    lo = self.read(self.PC + 1)
+    hi = self.read(self.PC + 2)
+    address = (hi * 256) | lo
+
+    self.addr = address + self.Y
+    self.arg = self.read(self.addr)
+    self.PC += 3
 
 
 def ABX(self):
-    pass
+    lo = self.read(self.PC + 1)
+    hi = self.read(self.PC + 2)
+    address = (hi * 256) | lo
 
-
-def IND(self):
-    pass
+    self.addr = address + self.X
+    self.arg = self.read(self.addr)
+    self.PC += 3
 
 
 def REL(self):

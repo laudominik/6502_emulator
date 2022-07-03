@@ -1,9 +1,11 @@
     .org $8000
 start:
-    lda #4
-    sta $05
-    lda #64
-    and $05
+    lda #$fc
+loop:
+    clc
+    adc #1
+
+    bmi loop
 
 
     .org $FFFC

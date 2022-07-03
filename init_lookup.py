@@ -49,8 +49,12 @@ def init_lookup(self):
         0x2e: Instruction(amd.ABS, 6, opc.ROL),  # OK ?
 
         0x30: Instruction(amd.REL, 2, opc.BMI),  # OK
+        0x35: Instruction(amd.ZPX, 4, opc.AND),
 
         0x38: Instruction(amd.IMP, 2, opc.SEC),  # OK
+        0x39: Instruction(amd.ABY, 4, opc.AND),
+
+        0x3d: Instruction(amd.ABX, 4, opc.AND),
 
         0x50: Instruction(amd.REL, 2, opc.BVC),  # OK
 
@@ -84,9 +88,15 @@ def init_lookup(self):
 
         0x90: Instruction(amd.REL, 2, opc.BCC),  # OK
 
-        0x98: Instruction(amd.IMP, 2, opc.TYA),  # OK
 
+        0x95: Instruction(amd.ZPX, 4, opc.STA),  # OK
+
+        0x98: Instruction(amd.IMP, 2, opc.TYA),  # OK
+        0x99: Instruction(amd.ABY, 5, opc.STA),
         0x9a: Instruction(amd.IMP, 2, opc.TXS),  # OK
+
+
+        0x9d: Instruction(amd.ABX, 5, opc.STA),  # OK
 
         0xa0: Instruction(amd.IMM, 2, opc.LDY),  # OK
 
@@ -111,12 +121,26 @@ def init_lookup(self):
 
         0xc0: Instruction(amd.IMM, 2, opc.CPY),  # OK
 
+        0xc4: Instruction(amd.ZPG, 3, opc.CPY),
+        0xc5: Instruction(amd.ZPG, 3, opc.CMP),
+        0xc6: Instruction(amd.ZPG, 5, opc.DEC),
+
         0xc8: Instruction(amd.IMP, 2, opc.INY),  # OK
         0xc9: Instruction(amd.IMM, 2, opc.CMP),  # OK
         0xca: Instruction(amd.IMP, 2, opc.DEX),  # OK
 
-        0xd8: Instruction(amd.IMP, 2, opc.CLD),  # OK
+        0xcc: Instruction(amd.ABS, 4, opc.CPY),
+        0xcd: Instruction(amd.ABS, 4, opc.CMP),
+        0xce: Instruction(amd.ABS, 6, opc.DEC),
 
+        0xd5: Instruction(amd.ZPX, 4, opc.CMP),
+        0xd6: Instruction(amd.ZPX, 6, opc.DEC),
+
+        0xd8: Instruction(amd.IMP, 2, opc.CLD),  # OK
+        0xd9: Instruction(amd.ABY, 4, opc.CMP),
+
+        0xdd: Instruction(amd.ABX, 4, opc.CMP),
+        0xde: Instruction(amd.ABX, 7, opc.DEC),
 
         0xe8: Instruction(amd.IMP, 2, opc.INX),  # OK
 
@@ -126,6 +150,7 @@ def init_lookup(self):
 
         0xe0: Instruction(amd.IMM, 2, opc.CPX),  # OK
 
+        0xe4: Instruction(amd.ZPG, 3, opc.CPX),
         0xe5: Instruction(amd.ZPG, 3, opc.SBC),
         0xe6: Instruction(amd.ZPG, 5, opc.INC),  # OK
 
@@ -133,6 +158,7 @@ def init_lookup(self):
         0xe9: Instruction(amd.IMM, 2, opc.SBC),
         0xea: Instruction(amd.IMM, 2, opc.NOP),  # OK
 
+        0xec: Instruction(amd.ABS, 4, opc.CPX),
         0xed: Instruction(amd.ABS, 4, opc.SBC),
         0xee: Instruction(amd.ABS, 6, opc.INC),  # OK
 
