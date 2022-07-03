@@ -50,11 +50,13 @@ def init_lookup(self):
 
         0x30: Instruction(amd.REL, 2, opc.BMI),  # OK
         0x35: Instruction(amd.ZPX, 4, opc.AND),
+        0x36: Instruction(amd.ZPX, 6, opc.ROL),
 
         0x38: Instruction(amd.IMP, 2, opc.SEC),  # OK
         0x39: Instruction(amd.ABY, 4, opc.AND),
 
         0x3d: Instruction(amd.ABX, 4, opc.AND),
+        0x3e: Instruction(amd. ABX, 7, opc.ROL),
 
         0x50: Instruction(amd.REL, 2, opc.BVC),  # OK
 
@@ -66,13 +68,24 @@ def init_lookup(self):
         0x60: Instruction(amd.IMP, 2, opc.RTS),  # OK
 
         0x65: Instruction(amd.ZPG, 3, opc.ADC),
+        0x66: Instruction(amd.ZPG, 5, opc.ROR),
+
 
         0x69: Instruction(amd.IMM, 2, opc.ADC),  # OK
         0x6a: Instruction(amd.IMP, 2, opc.ROR),  # OK
 
+
+        0x6e: Instruction(amd.ABS, 6, opc.ROR),
+
         0x70: Instruction(amd.REL, 2, opc.BVS),  # OK?
+
+        0x76: Instruction(amd.ZPX, 6, opc.ROR),
+
+
         0x78: Instruction(amd.IMP, 2, opc.SEI),  # OK
 
+
+        0x7e: Instruction(amd.ABX, 7, opc.ROR),
 
         0x84: Instruction(amd.ZPG, 3, opc.STY),  # OK
         0x85: Instruction(amd.ZPG, 3, opc.STA),  # OK
@@ -102,22 +115,31 @@ def init_lookup(self):
 
         0xa2: Instruction(amd.IMM, 2, opc.LDX),  # OK
         0xa4: Instruction(amd.ZPG, 3, opc.LDY),  # OK
+        0xa5: Instruction(amd.ZPG, 3, opc.LDA),
         0xa6: Instruction(amd.ZPG, 3, opc.LDX),  # OK
 
         0xa8: Instruction(amd.IMP, 2, opc.TAY),  # OK
         0xa9: Instruction(amd.IMM, 2, opc.LDA),  # OK
         0xaa: Instruction(amd.IMP, 2, opc.TAX),  # OK
 
+        0xac: Instruction(amd.ABS, 4, opc.LDY),
 
         0xad: Instruction(amd.ABS, 3, opc.LDA),  # OK
 
         0xb0: Instruction(amd.REL, 2, opc.BCS),  # OK
 
-        0xb8: Instruction(amd.IMP, 2, opc.CLV),  # OK
+        0xb4: Instruction(amd.ZPX, 4, opc.LDY),
+        0xb5: Instruction(amd.ZPX, 4, opc.LDA),
+        0xb6: Instruction(amd.ZPY, 4, opc.LDX),
 
+
+        0xb8: Instruction(amd.IMP, 2, opc.CLV),  # OK
+        0xb9: Instruction(amd.ABY, 4, opc.LDA),
         0xba: Instruction(amd.IMP, 2, opc.TSX),  # OK
 
-
+        0xbc: Instruction(amd.ABX, 4, opc.LDY),
+        0xbd: Instruction(amd.ABX, 4, opc.LDA),
+        0xbe: Instruction(amd.ABY, 4, opc.LDX),
 
         0xc0: Instruction(amd.IMM, 2, opc.CPY),  # OK
 
