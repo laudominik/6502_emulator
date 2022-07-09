@@ -106,3 +106,19 @@ def REL(self):
         self.addr = self.PC - ((~(self.arg - 1)) & 0xFF)
     else:
         self.addr = self.PC + self.arg
+
+
+def IND(self):
+    addr_fetch_lo = self.read(self.PC + 1)
+    addr_fetch_hi = self.read(self.PC + 2)
+
+    addr_ind = addr_fetch_hi * 256 | addr_fetch_lo
+
+    if addr_fetch_lo == 0xFF:
+        self.addr = self.read(addr_fetch_hi * 256) * 256 | self.read(addr_ind)
+    else:
+        self.addr = self.read(addr_ind + 1) * 256 | self.read(addr_ind)
+
+    self.arg = self.read(self.addr)
+
+    self.PC += 3

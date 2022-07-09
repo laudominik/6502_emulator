@@ -6,6 +6,7 @@ import interrupts as inr
 def init_lookup(self):
     # decode opcodes
 
+
     self.lookup = {
        #opcd              addrmode  c  callback
         0x00: Instruction(amd.IMP, 7, opc.BRK),
@@ -100,6 +101,7 @@ def init_lookup(self):
         0x69: Instruction(amd.IMM, 2, opc.ADC),  # OK
         0x6a: Instruction(amd.IMP, 2, opc.ROR),  # OK
 
+        0x6c: Instruction(amd.IND, 5, opc.JMP),
 
         0x6e: Instruction(amd.ABS, 6, opc.ROR),  # OK
 

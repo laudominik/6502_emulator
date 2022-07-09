@@ -1,6 +1,6 @@
 ### 6502 emulator with a connected data bus
 
-not all the instructions are implemented yet
+implements the entire official instruction set
 
 assembler used: http://sun.hasenbraten.de/vasm/  
 compiled with CPU=6502 SYNTAX=oldstyle
