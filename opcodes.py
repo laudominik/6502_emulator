@@ -241,11 +241,14 @@ def RTI(self):
 
 
 def EOR(self):
-    pass
+    self.A ^= self.arg
+    self.status_set(self.STATUS_BITS['Z'], self.A == 0)
+    self.status_set(self.STATUS_BITS['N'], self.A & 0x80)
 
 
 def LSR(self):
     pass
+
 
 
 

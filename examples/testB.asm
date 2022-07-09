@@ -1,16 +1,14 @@
     .org $8000
 start:
     lda #1
-    cmp #2
-    bne eq
-    lda #0
-    jmp end
+    eor #3
+    brk
+    nop
 
-    eq:
-    lda #3
-
-    end:
+    .org $FF00
+halt:
+    jmp halt
 
     .org $FFFC
     .word start
-    .word $0000
+    .word $FF00
