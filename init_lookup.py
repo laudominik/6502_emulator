@@ -62,22 +62,27 @@ def init_lookup(self):
         0x40: Instruction(amd.IMP, 6, opc.RTI),
 
         0x45: Instruction(amd.ZPG, 3, opc.EOR),  # OK
+        0x46: Instruction(amd.ZPG, 5, opc.LSR),
 
         0x48: Instruction(amd.IMP, 3, opc.PHA),
         0x49: Instruction(amd.IMM, 2, opc.EOR),  # OK
 
+        0x4a: Instruction(amd.IMP, 2, opc.LSR),
+
         0x4c: Instruction(amd.ABS, 3, opc.JMP),  # OK
         0x4d: Instruction(amd.ABS, 4, opc.EOR),  # OK
-
+        0x4e: Instruction(amd.ABS, 6, opc.LSR),
 
         0x50: Instruction(amd.REL, 2, opc.BVC),  # OK
 
         0x55: Instruction(amd.ZPX, 4, opc.EOR),  # OK
+        0x56: Instruction(amd.ZPX, 6, opc.LSR),
 
         0x58: Instruction(amd.IMP, 2, opc.CLI),  # OK
         0x59: Instruction(amd.ABY, 4, opc.EOR),  # OK
 
         0x5d: Instruction(amd.ABX, 4, opc.EOR),  # OK
+        0x5e: Instruction(amd.ABX, 7, opc.LSR),
 
         0x60: Instruction(amd.IMP, 2, opc.RTS),  # OK
 

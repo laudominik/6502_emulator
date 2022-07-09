@@ -247,10 +247,18 @@ def EOR(self):
 
 
 def LSR(self):
-    pass
+    temp = self.A if self.instruction.addrmode == IMP else self.arg
 
+    self.status_set(self.STATUS_BITS['C'],temp%2)
+    temp //= 2
 
+    self.status_set(self.STATUS_BITS['Z'], temp == 0)
+    self.status_set(self.STATUS_BITS['N'], 0)
 
+    if self.instruction.addrmode == IMP:
+        self.A = temp
+    else:
+        self.write(self.addr, temp)
 
 def JMP(self):
     self.PC = self.addr
