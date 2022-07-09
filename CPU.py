@@ -54,7 +54,6 @@ class CPU:
         self.STATUS = CPU.STATUS_BITS['U']
         self.arg = None
 
-
         self.instruction = Instruction(IMP, 9, NOP)
         self.cycles = 1
         self.PC -= 1

@@ -6,8 +6,25 @@ def NOP(self):
 
 
 def BRK(self):
-    print("break")
     self.PC += 1
+
+    self.status_set(self.self.STATUS_BITS['I'],1)
+
+    self.write(0x0100 + self.SP, self.PC & 0xFF)
+    self.SP -= 1
+
+    self.write(0x0100 + self.SP, self.PC >> 8)
+    self.SP -= 1
+
+    self.write(0x0100 + self.SP, self.S)
+    self.SP -= 1
+
+    self.status_set(self.self.STATUS_BITS['B'], 0)
+
+    hi = self.read(0xFFFF)
+    lo = self.read(0xFFFE)
+
+    self.PC = hi * 256 | lo
 
 
 # bitwise or register A and operand

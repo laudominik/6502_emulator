@@ -1,6 +1,7 @@
 from Instruction import Instruction
 import opcodes as opc
 import addr_modes as amd
+import interrupts as inr
 
 def init_lookup(self):
     # decode opcodes
