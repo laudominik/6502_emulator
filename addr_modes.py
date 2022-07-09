@@ -39,11 +39,32 @@ def ZPY(self):
 
 
 def IZX(self):
-    pass
+    addr_fetch = self.read(self.PC + 1) + self.X
+    addr_fetch &= 0xFF
+    addr_fetch_1 = (addr_fetch + 1) & 0xFF
+
+    lo = self.read(addr_fetch)
+    hi = self.read(addr_fetch_1)
+
+    self.addr = hi * 256 | lo
+    self.arg = self.read(self.addr)
+
+    self.PC += 2
 
 
 def IZY(self):
-    pass
+    addr_fetch = self.read(self.PC + 1)
+    addr_fetch &= 0xFF
+    addr_fetch_1 = (addr_fetch + 1) & 0xFF
+
+    lo = self.read(addr_fetch)
+    hi = self.read(addr_fetch_1)
+
+    self.addr = (hi * 256 | lo) + self.Y
+
+    self.arg = self.read(self.addr)
+
+    self.PC += 2
 
 
 def ABS(self):
