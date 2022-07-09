@@ -4,11 +4,11 @@ from addr_modes import IMP
 def NOP(self):
     self.PC += 1
 
-
 def BRK(self):
     self.PC += 1
 
-    self.status_set(self.self.STATUS_BITS['I'],1)
+
+    self.status_set(self.STATUS_BITS['B'], 1)
 
     self.write(0x0100 + self.SP, self.PC & 0xFF)
     self.SP -= 1
@@ -19,7 +19,7 @@ def BRK(self):
     self.write(0x0100 + self.SP, self.S)
     self.SP -= 1
 
-    self.status_set(self.self.STATUS_BITS['B'], 0)
+    self.status_set(self.STATUS_BITS['B'], 0)
 
     hi = self.read(0xFFFF)
     lo = self.read(0xFFFE)
@@ -225,7 +225,19 @@ def CPY(self):
 
 
 def RTI(self):
-    pass
+
+    flagB = self.status_get(self.STATUS_BITS['B'])
+    flagU = self.status_get(self.STATUS_BITS['U'])
+
+    self.S = self.read(0x0100 + self.SP + 1)
+
+    self.status_set(self.STATUS_BITS['B'], flagB)
+    self.status_set(self.STATUS_BITS['U'], flagU)
+
+    hi = self.read(0x0100 + self.SP + 2)
+    lo = self.read(0x0100 + self.SP + 3)
+    self.SP += 3
+    self.PC = (hi * 256) | lo
 
 
 def EOR(self):

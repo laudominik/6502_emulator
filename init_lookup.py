@@ -16,14 +16,14 @@ def init_lookup(self):
         0x05: Instruction(amd.ZPG, 3, opc.ORA),  # OK
         0x06: Instruction(amd.ZPG, 5, opc.ASL),  # OK
 
-        0x08: Instruction(amd.IMP, 3, opc.PHP),  # OK (to check eventually)
+        0x08: Instruction(amd.IMP, 3, opc.PHP),  # OK
         0x09: Instruction(amd.IMM, 2, opc.ORA),  # OK
         0x0a: Instruction(amd.IMP, 2, opc.ASL),  # OK
 
         0x0d: Instruction(amd.ABS, 4, opc.ORA),  # OK
         0x0e: Instruction(amd.ABS, 6, opc.ASL),  # OK
 
-        0x10: Instruction(amd.REL, 2, opc.BPL),
+        0x10: Instruction(amd.REL, 2, opc.BPL),  # OK
         0x11: Instruction(amd.IZY, 5, opc.ORA),
 
         0x15: Instruction(amd.ZPX, 4, opc.ORA),
@@ -57,13 +57,15 @@ def init_lookup(self):
         0x39: Instruction(amd.ABY, 4, opc.AND),
 
         0x3d: Instruction(amd.ABX, 4, opc.AND),
-        0x3e: Instruction(amd. ABX, 7, opc.ROL),
+        0x3e: Instruction(amd.ABX, 7, opc.ROL),
 
-        0x50: Instruction(amd.REL, 2, opc.BVC),  # OK
+        0x40: Instruction(amd.IMP, 6, opc.RTI),
 
         0x48: Instruction(amd.IMP, 3, opc.PHA),
 
         0x4c: Instruction(amd.ABS, 3, opc.JMP),  # OK
+
+        0x50: Instruction(amd.REL, 2, opc.BVC),  # OK
 
         0x58: Instruction(amd.IMP, 2, opc.CLI),  # OK
 
