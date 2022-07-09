@@ -2,7 +2,7 @@ from addr_modes import IMP
 
 
 def NOP(self):
-    self.PC += 1
+    pass
 
 def BRK(self):
     self.PC += 1

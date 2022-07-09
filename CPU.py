@@ -7,7 +7,7 @@ from addr_modes import IMP, REL
 
 class CPU:
 
-    def __init__(self, bus, debug = False):
+    def __init__(self, bus, debug = False, emulate_cycles = True):
 
         self.A = 0x00
         self.X = 0x00
@@ -20,6 +20,7 @@ class CPU:
         self.instruction: Instruction = None
 
         self.debug = debug
+        self.emulate_cycles = emulate_cycles
 
         self.arg = None
 
@@ -56,7 +57,6 @@ class CPU:
 
         self.instruction = Instruction(IMP, 9, NOP)
         self.cycles = 1
-        self.PC -= 1
 
     def status_set(self, bit, val: bool or int):
 
@@ -76,7 +76,29 @@ class CPU:
         self.bus.write(address, value)
 
     def tick(self):
+        if self.emulate_cycles: self.accurate_tick()
+        else: self.inaccurate_tick()
 
+    def inaccurate_tick(self):
+        op = self.read(self.PC)
+
+        self.instruction = self.lookup[op]
+
+        out = f"{hex(self.PC)} {self.instruction.disassemble()}"
+
+        self.instruction.addrmode(self)
+
+        if self.instruction.addrmode != IMP:
+            if self.instruction.addrmode == REL:
+                out += f" {hex(self.arg)}"
+            else:
+                out += f" {hex(self.addr)}"
+
+        if self.debug: print(out)
+        self.instruction.callback(self)
+
+
+    def accurate_tick(self):
         if self.cycles == 0:
 
             # read instruction from memory
@@ -110,6 +132,4 @@ class CPU:
 
             self.instruction.callback(self)
             self.cycles = 0
-
-
 

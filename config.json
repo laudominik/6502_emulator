@@ -1,4 +1,5 @@
 {
   "debug": true,
-  "tps": 5
+  "tps": 5,
+  "emulate_cycles": true
 }

@@ -8,9 +8,9 @@ from CPU import CPU
 
 class Bus:
 
-    def __init__(self, debug = False):
+    def __init__(self, debug = False, emulate_cycles = True):
         self.ram = [0 for x in range(0,0xFFFF + 1)]
-        self.cpu = CPU(self, debug)
+        self.cpu = CPU(self, debug, emulate_cycles)
         self.cpu.reset()
 
     def read(self, address):

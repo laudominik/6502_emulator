@@ -9,7 +9,7 @@ config_file = "config.json"
 with open(config_file, 'r') as f:
     config = json.loads(f.read())
 
-bus = Bus(debug=config["debug"])
+bus = Bus(debug=config["debug"], emulate_cycles=config["emulate_cycles"])
 
 bus.load_file("a.out")
 
